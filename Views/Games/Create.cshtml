@@ -1,0 +1,30 @@
+@model CheckersWeb.Models.Game
+
+@{
+    ViewData["Title"] = "Создание игры";
+}
+
+<h1>Создание игры</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post">
+            <p>Играть за:</p>
+            <div class="form-check">
+                <input type="radio" id="whiteRadio" name="Player" value="White" class="form-check-input" checked />
+                <label for="whiteRadio" class="form-check-label">Белых</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="blackRadio" name="Player" value="Black" class="form-check-input" />
+                <label for="blackRadio" class="form-check-label">Чёрных</label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Создать" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Назад к списку игр</a>
+</div>

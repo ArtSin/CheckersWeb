@@ -1,0 +1,46 @@
+@using System.Text.Json
+@model CheckersWeb.Models.Game
+
+@{
+    ViewData["Title"] = "Игра";
+}
+
+<div class="row">
+    <div class="col-md-9">
+        <h5 id="status-text" class="text-center">Загрузка...</h5>
+        <canvas id="canvas" width="300" height="300" style="width: 100%; height: 75vh;"></canvas>
+    </div>
+    <div class="col-md-3" style="overflow-y: scroll;">
+        <ul id="moves-list" class="list-group" style="height: 75vh;">
+            @if (Model.Moves != null)
+            {
+                @foreach (var item in Model.Moves)
+                {
+                    <li class="list-group-item">@item.ToHumanReadableString()</li>
+                }
+            }
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+<script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+
+@{
+var startMoves = JsonSerializer.Serialize(Model.Moves);
+var thisPlayer = User.Identity!.Name == Model.WhitePlayer!.UserName ? 1 : 0;
+var gameState = (int)Model.State;
+}
+<script>
+    const GAME_ID = @Model.Id;
+    const START_MOVES = '@Html.Raw(startMoves)';
+    const THIS_PLAYER = @thisPlayer;
+    const VIEW_ONLY = false;
+    const GAME_STATE = @gameState;
+</script>
+<script src="~/js/Board.js" asp-append-version="true"></script>
+<script src="~/js/BoardControl.js" asp-append-version="true"></script>
+<script src="~/js/GameClient.js" asp-append-version="true"></script>
+<script src="~/js/Move.js" asp-append-version="true"></script>
+<script src="~/js/Play.js" asp-append-version="true"></script>
+}

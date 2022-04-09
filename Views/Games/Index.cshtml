@@ -1,0 +1,81 @@
+@model IEnumerable<CheckersWeb.Models.Game>
+
+@{
+    ViewData["Title"] = "Игры";
+}
+
+<h1>Игры</h1>
+
+<p>
+    <a asp-action="Create">Создать новую</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => model.WhitePlayer)</th>
+            <th>@Html.DisplayNameFor(model => model.BlackPlayer)</th>
+            <th>@Html.DisplayNameFor(model => model.State)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @if (item.WhitePlayer == null)
+                    {
+                        @Html.DisplayFor(modelItem => item.WhitePlayer)
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.WhitePlayer.UserName)
+                    }
+                </td>
+                <td>
+                    @if (item.BlackPlayer == null)
+                    {
+                        @Html.DisplayFor(modelItem => item.BlackPlayer)
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.BlackPlayer.UserName)
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State)
+                </td>
+                <td>
+                    @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | *@
+                    @if (item.State == GameState.NotStarted && User.Identity != null && User.Identity.Name != null &&
+                   User.Identity.Name !=
+                   item.WhitePlayer?.UserName && User.Identity.Name !=
+                   item.BlackPlayer?.UserName)
+                    {
+                        <form asp-action="Join">
+                            <input type="hidden" name="Id" value="@item.Id" />
+                            <input type="submit" value="Присоединиться" class="btn btn-primary" />
+                            @* <a asp-action="Join" asp-route-id="@item.Id">Присоединиться</a> *@
+                        </form>
+                    }
+                    @if (item.State == GameState.Running && User.Identity != null && User.Identity.Name != null &&
+                   (User.Identity.Name ==
+                   item.WhitePlayer?.UserName || User.Identity.Name ==
+                   item.BlackPlayer?.UserName))
+                    {
+                        <a asp-action="Play" asp-route-id="@item.Id">Играть</a>
+                    }
+                    else if (item.State != GameState.NotStarted)
+                    {
+                        <a asp-action="View" asp-route-id="@item.Id">Просмотр</a>
+                    }
+                    @* <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
