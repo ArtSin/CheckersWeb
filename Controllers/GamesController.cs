@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
+using CheckersWeb.Bot;
 using CheckersWeb.Hubs;
 using CheckersWeb.Lib;
 using CheckersWeb.Models;
@@ -134,6 +135,12 @@ public class GamesController : Controller
             }
         }
 
+        if (game.WhitePlayerBotDepth != null && (game.Moves == null || game.Moves.Count == 0))
+        {
+            var board = new Board(false);
+            await DoBotMove(id.Value, game, PlayerColor.White, board);
+        }
+
         return View(game);
     }
 
@@ -161,12 +168,87 @@ public class GamesController : Controller
         await _context.Entry(game).Reference(x => x.BlackPlayer).LoadAsync();
 
         var user = await _userManager.GetUserAsync(HttpContext.User);
-        if ((game.WhitePlayer == null && game.BlackPlayer == null) || (game.WhitePlayer != null && game.BlackPlayer != null))
+        var whitePlayerNull = game.WhitePlayer == null && game.WhitePlayerBotDepth == null;
+        var blackPlayerNull = game.BlackPlayer == null && game.BlackPlayerBotDepth == null;
+        if ((whitePlayerNull && blackPlayerNull) || (!whitePlayerNull && !blackPlayerNull))
             return ValidationProblem();
-        else if (game.WhitePlayer == null)
+        else if (whitePlayerNull)
             game.WhitePlayer = user;
         else
             game.BlackPlayer = user;
+
+        game.State = GameState.Running;
+
+        try
+        {
+            _context.Update(game);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!_context.Games.Any(e => e.Id == id))
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+        return RedirectToAction(nameof(Play), new { id = game.Id });
+    }
+
+    [Authorize]
+    public async Task<IActionResult> AddBot(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+        var game = await _context.Games.FindAsync(id);
+        if (game == null)
+        {
+            return NotFound();
+        }
+        return View();
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddBot(int? id, int? maxDepth)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+        if (maxDepth == null || maxDepth < NegaScoutTranspositionBot.MIN_DEPTH || maxDepth > NegaScoutTranspositionBot.MAX_DEPTH)
+        {
+            return ValidationProblem();
+        }
+
+        var game = await _context.Games.FindAsync(id);
+        if (game == null)
+        {
+            return NotFound();
+        }
+        if (game.State != GameState.NotStarted)
+        {
+            return ValidationProblem();
+        }
+
+        await _context.Entry(game).Reference(x => x.WhitePlayer).LoadAsync();
+        await _context.Entry(game).Reference(x => x.BlackPlayer).LoadAsync();
+
+        var user = await _userManager.GetUserAsync(HttpContext.User);
+        var whitePlayerNull = game.WhitePlayer == null && game.WhitePlayerBotDepth == null;
+        var blackPlayerNull = game.BlackPlayer == null && game.BlackPlayerBotDepth == null;
+        if ((whitePlayerNull && blackPlayerNull) || (!whitePlayerNull && !blackPlayerNull))
+            return ValidationProblem();
+        else if (whitePlayerNull)
+            game.WhitePlayerBotDepth = maxDepth;
+        else
+            game.BlackPlayerBotDepth = maxDepth;
 
         game.State = GameState.Running;
 
@@ -280,6 +362,11 @@ public class GamesController : Controller
                 break;
         };
 
+        if (game.State == GameState.Running && (game.WhitePlayerBotDepth != null || game.BlackPlayerBotDepth != null))
+        {
+            await DoBotMove(id, game, move.Player == PlayerColor.White ? PlayerColor.Black : PlayerColor.White, board);
+        }
+
         return Ok();
     }
 
@@ -287,5 +374,46 @@ public class GamesController : Controller
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    private async Task DoBotMove(int id, Game game, PlayerColor botPlayer, Board board)
+    {
+        var bot = new NegaScoutTranspositionBot(game, botPlayer, board);
+        var botMove = bot.GetMove();
+        game.Moves.Add(botMove);
+        board.DoMove(botMove);
+
+        if (botMove.Player == PlayerColor.White && !board.CanPlayerMove(PlayerColor.Black))
+        {
+            game.State = GameState.WhitePlayerWon;
+        }
+        else if (botMove.Player == PlayerColor.Black && !board.CanPlayerMove(PlayerColor.White))
+        {
+            game.State = GameState.BlackPlayerWon;
+        }
+        else if (game.Moves.Count >= MAX_MOVES)
+        {
+            game.State = GameState.Draw;
+        }
+
+        _context.Update(game);
+        await _context.SaveChangesAsync();
+
+        var group = _hubContext.Clients.Group(id.ToString());
+        await group.SendAsync("newMove", JsonSerializer.Serialize(botMove));
+        switch (game.State)
+        {
+            case GameState.WhitePlayerWon:
+                await group.SendAsync("whitePlayerWon");
+                break;
+            case GameState.BlackPlayerWon:
+                await group.SendAsync("blackPlayerWon");
+                break;
+            case GameState.Draw:
+                await group.SendAsync("draw");
+                break;
+            default:
+                break;
+        };
     }
 }

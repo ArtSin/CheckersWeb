@@ -29,7 +29,15 @@
                 <td>
                     @if (item.WhitePlayer == null)
                     {
-                        @Html.DisplayFor(modelItem => item.WhitePlayer)
+                        if (item.WhitePlayerBotDepth == null)
+                        {
+                            @Html.DisplayFor(modelItem => item.WhitePlayer)
+                        }
+                        else
+                        {
+                            @Html.DisplayNameFor(modelItem => item.WhitePlayerBotDepth)
+                            @Html.DisplayFor(modelItem => item.WhitePlayerBotDepth)
+                        }
                     }
                     else
                     {
@@ -39,7 +47,15 @@
                 <td>
                     @if (item.BlackPlayer == null)
                     {
-                        @Html.DisplayFor(modelItem => item.BlackPlayer)
+                        if (item.BlackPlayerBotDepth == null)
+                        {
+                            @Html.DisplayFor(modelItem => item.BlackPlayer)
+                        }
+                        else
+                        {
+                            @Html.DisplayNameFor(modelItem => item.BlackPlayerBotDepth)
+                            @Html.DisplayFor(modelItem => item.BlackPlayerBotDepth)
+                        }
                     }
                     else
                     {
@@ -52,20 +68,22 @@
                 <td>
                     @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | *@
                     @if (item.State == GameState.NotStarted && User.Identity != null && User.Identity.Name != null &&
-                   User.Identity.Name !=
-                   item.WhitePlayer?.UserName && User.Identity.Name !=
-                   item.BlackPlayer?.UserName)
+                        User.Identity.Name != item.WhitePlayer?.UserName && User.Identity.Name != item.BlackPlayer?.UserName)
                     {
                         <form asp-action="Join">
                             <input type="hidden" name="Id" value="@item.Id" />
                             <input type="submit" value="Присоединиться" class="btn btn-primary" />
-                            @* <a asp-action="Join" asp-route-id="@item.Id">Присоединиться</a> *@
+                        </form>
+                    }
+                    else if (item.State == GameState.NotStarted && User.Identity != null && User.Identity.Name != null &&
+                            (User.Identity.Name == item.WhitePlayer?.UserName || User.Identity.Name == item.BlackPlayer?.UserName))
+                    {
+                        <form asp-action="AddBot" asp-route-id="@item.Id" method="get">
+                            <input type="submit" value="Добавить бота" class="btn btn-primary" />
                         </form>
                     }
                     @if (item.State == GameState.Running && User.Identity != null && User.Identity.Name != null &&
-                   (User.Identity.Name ==
-                   item.WhitePlayer?.UserName || User.Identity.Name ==
-                   item.BlackPlayer?.UserName))
+                        (User.Identity.Name == item.WhitePlayer?.UserName || User.Identity.Name == item.BlackPlayer?.UserName))
                     {
                         <a asp-action="Play" asp-route-id="@item.Id">Играть</a>
                     }

@@ -1,0 +1,24 @@
+@model CheckersWeb.Models.Game
+
+@{
+    ViewData["Title"] = "Добавление бота";
+}
+
+<h1>Добавление бота</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddBot" method="post">
+            <p id="rangeVal">Глубина поиска бота: 5</p>
+            <input type="range" min="1" max="10" value="5" name="MaxDepth" class="form-range" id="formRange"
+                onChange="document.getElementById('rangeVal').innerText = 'Глубина поиска бота: ' + document.getElementById('formRange').value">
+            <div class="form-group">
+                <input type="submit" value="Добавить" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Назад к списку игр</a>
+</div>

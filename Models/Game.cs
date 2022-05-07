@@ -35,4 +35,12 @@ public class Game
     public GameState State { get; set; }
 
     public List<Move>? Moves { get; set; }
+
+    [Display(Name = "Бот: ")]
+    [DisplayFormat(NullDisplayText = "—")]
+    public int? WhitePlayerBotDepth { get; set; }
+
+    [Display(Name = "Бот: ")]
+    [DisplayFormat(NullDisplayText = "—")]
+    public int? BlackPlayerBotDepth { get; set; }
 }

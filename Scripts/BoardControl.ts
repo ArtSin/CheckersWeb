@@ -205,6 +205,8 @@ class BoardControl {
 
                 this.ctx.strokeStyle = BoardControl.LAST_MOVE_COLOR;
                 this.ctx.lineWidth = BoardControl.LAST_MOVE_LINE_WIDTH;
+
+                this.ctx.beginPath();
                 this.ctx.moveTo((currCell.Col + 0.5) * cellSize,
                     (Board.SIZE - 0.5 - currCell.Row) * cellSize - 15);
                 this.ctx.lineTo((nextCell.Col + 0.5) * cellSize,
@@ -218,9 +220,13 @@ class BoardControl {
 
                 this.ctx.strokeStyle = BoardControl.LAST_MOVE_USED_COLOR;
                 this.ctx.lineWidth = BoardControl.LAST_MOVE_LINE_WIDTH;
+
+                this.ctx.beginPath();
                 this.ctx.moveTo(-cellSize / 8, -cellSize / 8);
                 this.ctx.lineTo(cellSize / 8, cellSize / 8);
                 this.ctx.stroke();
+
+                this.ctx.beginPath();
                 this.ctx.moveTo(-cellSize / 8, cellSize / 8);
                 this.ctx.lineTo(cellSize / 8, -cellSize / 8);
                 this.ctx.stroke();

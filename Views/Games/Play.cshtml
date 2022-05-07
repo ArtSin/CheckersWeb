@@ -28,7 +28,7 @@
 
 @{
 var startMoves = JsonSerializer.Serialize(Model.Moves);
-var thisPlayer = User.Identity!.Name == Model.WhitePlayer!.UserName ? 1 : 0;
+var thisPlayer = User.Identity!.Name == Model.WhitePlayer?.UserName ? 1 : 0;
 var gameState = (int)Model.State;
 }
 <script>
