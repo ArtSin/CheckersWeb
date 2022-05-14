@@ -1,0 +1,40 @@
+﻿@model IEnumerable<CheckersWeb.Models.Rating>
+
+@{
+    ViewData["Title"] = "Рейтинг игроков";
+}
+
+<h1>Рейтинг игроков</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Player)</th>
+            <th>@Html.DisplayNameFor(model => model.Wins)</th>
+            <th>@Html.DisplayNameFor(model => model.Losses)</th>
+            <th>@Html.DisplayNameFor(model => model.Draws)</th>
+            <th>@Html.DisplayNameFor(model => model.Score)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Player.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Wins)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Losses)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Draws)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Score)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

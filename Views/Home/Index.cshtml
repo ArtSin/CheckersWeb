@@ -1,8 +1,17 @@
-﻿@{
+﻿@model IEnumerable<CheckersWeb.Models.Game>[]
+
+@{
     ViewData["Title"] = "Главная страница";
 }
 
-@* <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    </div> *@
+<h1>Новые игры</h1>
+<p>
+    <a asp-controller="Games" asp-action="Create">Создать новую</a>
+</p>
+@await Html.PartialAsync("../_GamesPartial.cshtml", Model[0])
+
+<h1>Текущие игры</h1>
+@await Html.PartialAsync("../_GamesPartial.cshtml", Model[1])
+
+<h1>Прошедшие игры</h1>
+@await Html.PartialAsync("../_GamesPartial.cshtml", Model[2])

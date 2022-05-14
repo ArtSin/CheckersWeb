@@ -1,0 +1,90 @@
+@model IEnumerable<CheckersWeb.Models.Game>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => model.WhitePlayer)</th>
+            <th>@Html.DisplayNameFor(model => model.BlackPlayer)</th>
+            <th>@Html.DisplayNameFor(model => model.State)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @if (item.WhitePlayer == null)
+                    {
+                        if (item.WhitePlayerBotDepth == null)
+                        {
+                            @Html.DisplayFor(modelItem => item.WhitePlayer)
+                        }
+                        else
+                        {
+                            @Html.DisplayNameFor(modelItem => item.WhitePlayerBotDepth)
+                            @Html.DisplayFor(modelItem => item.WhitePlayerBotDepth)
+                        }
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.WhitePlayer.UserName)
+                    }
+                </td>
+                <td>
+                    @if (item.BlackPlayer == null)
+                    {
+                        if (item.BlackPlayerBotDepth == null)
+                        {
+                            @Html.DisplayFor(modelItem => item.BlackPlayer)
+                        }
+                        else
+                        {
+                            @Html.DisplayNameFor(modelItem => item.BlackPlayerBotDepth)
+                            @Html.DisplayFor(modelItem => item.BlackPlayerBotDepth)
+                        }
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.BlackPlayer.UserName)
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State)
+                </td>
+                <td>
+                    @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | *@
+                    @if (item.State == GameState.NotStarted && User.Identity != null && User.Identity.Name != null &&
+                   User.Identity.Name != item.WhitePlayer?.UserName && User.Identity.Name != item.BlackPlayer?.UserName)
+                    {
+                        <form asp-controller="Games" asp-action="Join">
+                            <input type="hidden" name="Id" value="@item.Id" />
+                            <input type="submit" value="Присоединиться" class="btn btn-primary" />
+                        </form>
+                    }
+                    else if (item.State == GameState.NotStarted && User.Identity != null && User.Identity.Name != null &&
+                    (User.Identity.Name == item.WhitePlayer?.UserName || User.Identity.Name == item.BlackPlayer?.UserName))
+                    {
+                        <form asp-controller="Games" asp-action="AddBot" asp-route-id="@item.Id" method="get">
+                            <input type="submit" value="Добавить бота" class="btn btn-primary" />
+                        </form>
+                    }
+                    @if (item.State == GameState.Running && User.Identity != null && User.Identity.Name != null &&
+                   (User.Identity.Name == item.WhitePlayer?.UserName || User.Identity.Name == item.BlackPlayer?.UserName))
+                    {
+                        <a asp-controller="Games" asp-action="Play" asp-route-id="@item.Id">Играть</a>
+                    }
+                    else if (item.State != GameState.NotStarted)
+                    {
+                        <a asp-controller="Games" asp-action="View" asp-route-id="@item.Id">Просмотр</a>
+                    }
+                    @* <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

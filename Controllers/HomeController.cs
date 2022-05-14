@@ -1,26 +1,45 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using CheckersWeb.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CheckersWeb.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly ApplicationDbContext _context;
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
     {
+        _context = context;
         _logger = logger;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
+        var newGames = await _context.Games
+            .Include(x => x.WhitePlayer)
+            .Include(x => x.BlackPlayer)
+            .Where(x => x.State == GameState.NotStarted)
+            .OrderByDescending(x => x.Id)
+            .Take(10)
+            .ToListAsync();
+        var currGames = await _context.Games
+            .Include(x => x.WhitePlayer)
+            .Include(x => x.BlackPlayer)
+            .Where(x => x.State == GameState.Running)
+            .OrderByDescending(x => x.Id)
+            .Take(10)
+            .ToListAsync();
+        var pastGames = await _context.Games
+            .Include(x => x.WhitePlayer)
+            .Include(x => x.BlackPlayer)
+            .Where(x => x.State == GameState.WhitePlayerWon || x.State == GameState.BlackPlayerWon || x.State == GameState.Draw)
+            .OrderByDescending(x => x.Id)
+            .Take(10)
+            .ToListAsync();
+        return View(new[] { newGames, currGames, pastGames });
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
