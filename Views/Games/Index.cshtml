@@ -9,4 +9,14 @@
 <p>
     <a asp-action="Create">Создать новую</a>
 </p>
+<form asp-controller="Games" asp-action="Search">
+    <div class="input-group">
+        <input type="search" name="Player" value="" class="form-control border-end-0 border" />
+        <select name="Color" class="form-select">
+            <option value="White" selected>Как белый игрок</option>
+            <option value="Black">Как чёрный игрок</option>
+        </select>
+        <input type="submit" value="Поиск по игроку" class="btn btn-primary" />
+    </div>
+</form>
 <partial name="../_GamesPartial.cshtml" />

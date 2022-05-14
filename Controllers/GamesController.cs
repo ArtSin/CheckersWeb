@@ -39,6 +39,34 @@ public class GamesController : Controller
             .ToListAsync());
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Search(string? player, string? color)
+    {
+        if (player == null || color == null || (color != "White" && color != "Black"))
+        {
+            return ValidationProblem();
+        }
+        if (color == "White")
+        {
+            return View(await _context.Games
+                .Include(x => x.WhitePlayer)
+                .Include(x => x.BlackPlayer)
+                .Where(x => x.WhitePlayer != null && x.WhitePlayer.UserName == player)
+                .OrderByDescending(x => x.Id)
+                .ToListAsync());
+        }
+        else
+        {
+            return View(await _context.Games
+                .Include(x => x.WhitePlayer)
+                .Include(x => x.BlackPlayer)
+                .Where(x => x.BlackPlayer != null && x.BlackPlayer.UserName == player)
+                .OrderByDescending(x => x.Id)
+                .ToListAsync());
+        }
+    }
+
     [Authorize]
     public IActionResult Create()
     {
