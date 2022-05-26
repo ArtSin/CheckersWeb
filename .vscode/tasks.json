@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/CheckersWeb.csproj",
+                "${workspaceFolder}/CheckersWeb/CheckersWeb.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/CheckersWeb.csproj",
+                "${workspaceFolder}/CheckersWeb/CheckersWeb.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/CheckersWeb.csproj"
+                "${workspaceFolder}/CheckersWeb/CheckersWeb.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

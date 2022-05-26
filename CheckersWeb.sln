@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckersWeb", "CheckersWeb\CheckersWeb.csproj", "{0575937C-2F6E-456C-903F-445C4E12906C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{F86F4422-E056-4A53-9604-FA5750C24060}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "BLL\BLL.csproj", "{82127979-680D-4C87-BBC3-5A39BAD3B3B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0575937C-2F6E-456C-903F-445C4E12906C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0575937C-2F6E-456C-903F-445C4E12906C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0575937C-2F6E-456C-903F-445C4E12906C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0575937C-2F6E-456C-903F-445C4E12906C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F86F4422-E056-4A53-9604-FA5750C24060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F86F4422-E056-4A53-9604-FA5750C24060}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F86F4422-E056-4A53-9604-FA5750C24060}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F86F4422-E056-4A53-9604-FA5750C24060}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82127979-680D-4C87-BBC3-5A39BAD3B3B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82127979-680D-4C87-BBC3-5A39BAD3B3B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82127979-680D-4C87-BBC3-5A39BAD3B3B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82127979-680D-4C87-BBC3-5A39BAD3B3B1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
