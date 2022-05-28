@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+namespace CheckersWeb.DAL;
+
 public class ApplicationDbContext : IdentityDbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -8,5 +10,5 @@ public class ApplicationDbContext : IdentityDbContext
     {
     }
 
-    public DbSet<CheckersWeb.Models.Game> Games { get; set; }
+    public DbSet<CheckersWeb.DAL.Models.Game> Games { get; set; }
 }

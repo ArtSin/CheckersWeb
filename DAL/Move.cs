@@ -1,4 +1,9 @@
-﻿namespace CheckersWeb.Lib;
+﻿namespace CheckersWeb.DAL;
+
+// Тип шашки (нет шашки, обычная, дамка)
+public enum PieceType { Empty, Normal, King };
+// Цвет игрока
+public enum PlayerColor { Black, White };
 
 public class Cell : IEquatable<Cell>
 {

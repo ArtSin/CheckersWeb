@@ -1,10 +1,10 @@
-﻿using CheckersWeb.Lib;
-using CheckersWeb.Models;
+﻿using CheckersWeb.DAL;
+using CheckersWeb.DAL.Models;
 using Haus.Math;
 
-namespace CheckersWeb.Bot;
+namespace CheckersWeb.BLL.Bot;
 
-class NegaScoutTranspositionBot
+public class NegaScoutTranspositionBot
 {
     enum TableEntryType { Exact, LowerBound, UpperBound };
 

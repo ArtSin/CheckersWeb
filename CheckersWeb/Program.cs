@@ -1,3 +1,4 @@
+using CheckersWeb.DAL;
 using CheckersWeb.Hubs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

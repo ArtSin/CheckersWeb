@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
+using CheckersWeb.DAL;
 using CheckersWeb.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CheckersWeb.Controllers;
 
@@ -9,36 +9,23 @@ public class HomeController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<HomeController> _logger;
+    private readonly DAL.Games gamesData;
 
     public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
     {
         _context = context;
         _logger = logger;
+
+        gamesData = new DAL.Games(_context);
     }
 
+    // Главная страница
     public async Task<IActionResult> Index()
     {
-        var newGames = await _context.Games
-            .Include(x => x.WhitePlayer)
-            .Include(x => x.BlackPlayer)
-            .Where(x => x.State == GameState.NotStarted)
-            .OrderByDescending(x => x.Id)
-            .Take(10)
-            .ToListAsync();
-        var currGames = await _context.Games
-            .Include(x => x.WhitePlayer)
-            .Include(x => x.BlackPlayer)
-            .Where(x => x.State == GameState.Running)
-            .OrderByDescending(x => x.Id)
-            .Take(10)
-            .ToListAsync();
-        var pastGames = await _context.Games
-            .Include(x => x.WhitePlayer)
-            .Include(x => x.BlackPlayer)
-            .Where(x => x.State == GameState.WhitePlayerWon || x.State == GameState.BlackPlayerWon || x.State == GameState.Draw)
-            .OrderByDescending(x => x.Id)
-            .Take(10)
-            .ToListAsync();
+        // Новые, текущие, прошедшие игры
+        var newGames = await gamesData.TopNewGames();
+        var currGames = await gamesData.TopCurrentGames();
+        var pastGames = await gamesData.TopPastGames();
         return View(new[] { newGames, currGames, pastGames });
     }
 

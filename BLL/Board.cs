@@ -1,9 +1,6 @@
-﻿namespace CheckersWeb.Lib;
+﻿using CheckersWeb.DAL;
 
-// Тип шашки (нет шашки, обычная, дамка)
-public enum PieceType { Empty, Normal, King };
-// Цвет игрока
-public enum PlayerColor { Black, White };
+namespace CheckersWeb.BLL;
 
 // Доска
 public class Board

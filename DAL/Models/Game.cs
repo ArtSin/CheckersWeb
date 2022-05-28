@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using CheckersWeb.Lib;
 using Microsoft.AspNetCore.Identity;
 
-namespace CheckersWeb.Models;
+namespace CheckersWeb.DAL.Models;
 
 public enum GameState
 {
